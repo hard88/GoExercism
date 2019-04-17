@@ -1,30 +1,26 @@
 package space
 
-import (
-	"strings"
-)
+var secondsInOneEarthYear = 31557600.0
+
+var orbitalPeriodsInEarthYears = map[Planet]float64{
+	"Earth":   1.0,
+	"Mercury": 0.2408467,
+	"Venus":   0.61519726,
+	"Mars":    1.8808158,
+	"Jupiter": 11.862615,
+	"Saturn":  29.447498,
+	"Uranus":  84.016846,
+	"Neptune": 164.79132,
+}
 
 type Planet string
 
 func Age(second float64, planet Planet) float64 {
-	earthYear := second/60/60/24/365.25
-	var proportion float64
-	if strings.Compare("Earth", string(planet)) == 0 {
-		proportion = 1
-	} else if strings.Compare("Mercury", string(planet)) == 0 {
-		proportion = 0.2408467
-	} else if strings.Compare("Venus", string(planet)) == 0 {
-		proportion = 0.61519726
-	} else if strings.Compare("Mars", string(planet)) == 0 {
-		proportion = 1.8808158
-	} else if strings.Compare("Jupiter", string(planet)) == 0 {
-		proportion = 11.862615
-	} else if strings.Compare("Saturn", string(planet)) == 0 {
-		proportion = 29.447498
-	} else if strings.Compare("Uranus", string(planet)) == 0 {
-		proportion = 84.016846
-	} else if strings.Compare("Neptune", string(planet)) == 0 {
-		proportion = 164.79132
-	}
-	return earthYear/proportion
+
+	secondsInAYearOnPlanet := secondsInOneEarthYear * orbitalPeriodsInEarthYears[planet]
+
+	years := second / secondsInAYearOnPlanet
+
+	return years
+
 }
