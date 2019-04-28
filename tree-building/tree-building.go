@@ -1,8 +1,7 @@
 package tree
 
 import (
-	"errors"
-	"sort"
+	"fmt"
 )
 
 type Record struct {
@@ -16,70 +15,42 @@ type Node struct {
 	Children []*Node
 }
 
-type ByID []Record
-
-func (records ByID) Len() int           { return len(records) }
-func (records ByID) Swap(i, j int)      { records[i], records[j] = records[j], records[i] }
-func (records ByID) Less(i, j int) bool { return records[i].ID < records[j].ID }
+const rootID = 0
 
 func Build(records []Record) (*Node, error) {
-
 	if len(records) == 0 {
 		return nil, nil
 	}
 
-	root := Node{}
+	for i, r := range records {
+		if r.ID < rootID || r.ID >= len(records) {
+			return nil, fmt.Errorf("out of bounds of id %d", r.ID)
+		}
+		if r.ID != i {
+			records[i], records[r.ID] = records[r.ID], records[i]
+		}
+	}
 
-	sort.Sort(ByID(records))
+	nodes := make([]Node, len(records))
 
-	for i := range records {
-
-		if i == 0 {
-			if records[i].ID != records[i].Parent {
-				return nil, errors.New("no root node")
-			}
-			root.ID = records[i].ID
+	for i, r := range records {
+		if r.ID != i {
+			return nil, fmt.Errorf("non-contiguous node, want %d, get %d", i, r.ID)
 		}
 
-		if records[i].Parent > 0 && records[i].ID <= records[i].Parent {
-			return nil, errors.New("children id bigger than parent")
+		validParentForChild := (r.ID > r.Parent) || (r.ID == rootID && r.Parent == rootID)
+		if !validParentForChild {
+			return nil, fmt.Errorf("node %d has impossible parent %d", r.ID, r.Parent)
 		}
 
-		if records[i].ID >= len(records) {
-			return nil, errors.New("out of range")
+		nodes[i].ID = i
+		if i != rootID {
+			q := &nodes[r.Parent]
+			q.Children = append(q.Children, &nodes[i])
 		}
 
 	}
 
-	for i := range records {
-		if i == 0 {
-			continue
-		}
+	return &nodes[0], nil
 
-		node := Node{ID: records[i].ID}
-		isBelong := false
-
-		if records[i].ID == records[i-1].ID {
-			return nil, errors.New("duplicate node")
-		}
-
-		if records[i].Parent == root.ID {
-			root.Children = append(root.Children, &node)
-			isBelong = true
-		} else {
-			for _, c := range root.Children {
-				if c.ID == records[i].Parent {
-					c.Children = append(c.Children, &node)
-					isBelong = true
-					break
-				}
-			}
-		}
-
-		if !isBelong {
-			return nil, errors.New("no parent")
-		}
-	}
-
-	return &root, nil
 }
