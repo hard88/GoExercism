@@ -14,11 +14,11 @@ import (
 type Kind constant.Kind
 
 const (
-    // Pick values for the following identifiers used by the test program.
-    NaT = iota // not a triangle
-    Equ // equilateral
-    Iso // isosceles
-    Sca // scalene
+	// Pick values for the following identifiers used by the test program.
+	NaT = iota // not a triangle
+	Equ        // equilateral
+	Iso        // isosceles
+	Sca        // scalene
 )
 
 // KindFromSides should have a comment documenting it.
@@ -34,7 +34,7 @@ func KindFromSides(a, b, c float64) Kind {
 		math.IsInf(a, 1) || math.IsInf(b, 1) || math.IsInf(c, 1) ||
 		math.IsInf(a, -1) || math.IsInf(b, -1) || math.IsInf(c, -1) ||
 		a <= 0 || b <= 0 || c <= 0 ||
-		a + b < c || a + c < b || b + c < a { // is a triangle
+		a+b < c || a+c < b || b+c < a { // is a triangle
 		k = Kind(NaT)
 	} else {
 		if a == b && b == c {

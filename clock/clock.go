@@ -6,7 +6,7 @@ type Clock struct {
 	hour, minute uint
 }
 
-func New(hour int, minute int) Clock  {
+func New(hour int, minute int) Clock {
 	appendHour := minute / 60
 
 	if minute = minute % 60; minute < 0 {
@@ -24,7 +24,7 @@ func New(hour int, minute int) Clock  {
 	//return c
 }
 
-func (c Clock) String() string  {
+func (c Clock) String() string {
 	return fmt.Sprintf("%02d:%02d", c.hour, c.minute)
 }
 
@@ -39,11 +39,9 @@ func (c Clock) Add(minute int) Clock {
 
 	h = h % 24
 
-
 	c.hour, c.minute = uint(h), uint(m)
 	return c
 }
-
 
 func (c Clock) Subtract(minute int) Clock {
 	m := int(c.minute) - minute
@@ -62,7 +60,6 @@ func (c Clock) Subtract(minute int) Clock {
 	if h = h % 24; h < 0 {
 		h = h + 24
 	}
-
 
 	c.hour, c.minute = uint(h), uint(m)
 	return c
