@@ -30,9 +30,7 @@ func generateName() string {
 		name = ""
 		name += string('A' + rune(rand.Intn(26)))
 		name += string('A' + rune(rand.Intn(26)))
-		name += strconv.Itoa(rand.Intn(10))
-		name += strconv.Itoa(rand.Intn(10))
-		name += strconv.Itoa(rand.Intn(10))
+		name += strconv.Itoa(rand.Intn(999))
 		if nameMap[name] < 1 {
 			break
 		}
